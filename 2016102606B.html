@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>数独</title>
+	<style type="text/css">
+		td{width:40px;height:40px;text-align:center;font-size:24px;font-weight:bold}
+		.canFill{background-color:#e7e7e7}
+		.cellSelected{background-color:red;color:Blue;font-weight:bold}
+		.filledText{font-weight:bold;color:Blue}
+		button{font-size:18px;width:140px;height:35px;}
+	</style>
+	<script type="text/javascript" src="./jquery-3.1.1.min.js"></script>
+</head>
+<body>
+	<button id="btnCheckSudoku">判断正误</button>&nbsp;&nbsp;&nbsp;
+	<!--<button id="btnGenerateNew">生成数独</button>-->
+	<table border="1" cellpadding="0" cellspacing="0" id="sudoku">
+		<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+		<tr><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>1</td><td>2</td><td>3</td></tr>
+		<tr><td>7</td><td>8</td><td>9</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+		<tr><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>1</td></tr>
+		<tr><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+		<tr><td>8</td><td>9</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+		<tr><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>1</td><td>2</td></tr>
+		<tr><td>6</td><td>7</td><td>8</td><td>9</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+		<tr><td>9</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td></td></tr>
+	</table><br>
+	<table border="1" cellpadding="0" cellspacing="0" style="background-color:#dfe2be" id="numList">
+		<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+	</table>
+	<script type="text/javascript">
+		$("td:empty").addClass("canFill");//$("td:empty")选中所有内容为空的元素
+		
+		$(".canFill").click(function(){
+			$(".cellSelected").removeClass("cellSelected");//移走其他选中的元素
+			$(this).addClass("cellSelected");//当前单元格加上选中
+		});
+
+		//选中numList元素下的td元素
+		$("#numList td").click(function(){
+			//找到有无一个td被标记cellSelected，如果找到则把当前数填充到单元格
+
+			//当前单元格的数字
+			var nowNum=$(this).text();
+			$(".cellSelected").text(nowNum);//填入当前数字
+			$(".cellSelected").addClass("filledText");//增加class
+		});
+		$("#btnCheckSudoku").click(function(){
+			//alert(checkSpace());//判断有误空格，调试完毕后可以删除
+
+			//为了调试方便，可以把数据直接填入表格，待调试完毕后，最后进行真实性调试
+
+			if(checkSpace()==true && checkRow()==true && checkCol()==true && checkNine()==true){
+				alert("OK!");
+			}else{
+				alert("填写有误！");
+			};
+		});
+
+		/*$("#btnGenerateNew").click(function(){
+			var rowAns=0;
+			var colAns=0;
+			while(colAns<9) {
+				while(rowAns<9) {
+					var cellTextAns=parseInt($("#sudoku tr").eq(rowNum).children("td").eq(rowTest).text());
+				}
+			}
+		});*/
+
+		//根据checkSpace()和checkRow()提示，完成如下三个函数
+		//判断有误空白
+		function checkSpace(){
+			//alert("A"+$("#sudoku td").eq(i).text()+"A");
+			for(var i=0;i<81;i++){
+				var cellText=$("#sudoku td").eq(i).text();
+				if (cellText=="")return false;
+			}
+			return true;
+		}
+		//行判断
+		function checkRow(){
+			//$("#sudoku tr")表示选中id为sudoku元素下的所有tr元素；
+			//eq(1)的含义是选中元素中编号为1的元素，即第二个元素
+			//children("td")的含义是选中子元素td；
+			//eq(2)表示选中编号为2的元素，相当于第3个元素
+
+			//var bumpAddRow=0;//用于检测行内数字是否符合要求
+			for (var rowNum=0; rowNum<9; rowNum++) {
+				for (var rowTest=0; rowTest<9; rowTest++) {
+					var cell1=0;
+					var cell2=0;
+					var cell3=0;
+					var cell4=0;
+					var cell5=0;
+					var cell6=0;
+					var cell7=0;
+					var cell8=0;
+					var cell9=0;
+					var cellTextRow=parseInt($("#sudoku tr").eq(rowNum).children("td").eq(rowTest).text());//取出该行内每一个数字
+					if (cellTextRow==1) {
+						cell1++;
+					}
+					if (cellTextRow==2) {
+						cell2++;
+					}
+					if (cellTextRow==3) {
+						cell3++;
+					}
+					if (cellTextRow==4) {
+						cell4++;
+					}
+					if (cellTextRow==5) {
+						cell5++;
+					}
+					if (cellTextRow==6) {
+						cell6++;
+					}
+					if (cellTextRow==7) {
+						cell7++;
+					}
+					if (cellTextRow==8) {
+						cell8++;
+					}
+					if (cellTextRow==9) {
+						cell9++;
+					}
+				}
+				if (cell1!=1) {
+					return false;
+					break;
+				}
+				if (cell2!=1) {
+					return false;
+					break;
+				}
+				if (cell3!=1) {
+					return false;
+					break;
+				}
+				if (cell4!=1) {
+					return false;
+					break;
+				}
+				if (cell5!=1) {
+					return false;
+					break;
+				}
+				if (cell6!=1) {
+					return false;
+					break;
+				}
+				if (cell7!=1) {
+					return false;
+					break;
+				}
+				if (cell8!=1) {
+					return false;
+					break;
+				}
+				if (cell9!=1) {
+					return false;
+					break;
+				}
+				/*for (var str2=1; str2<10; str2++) {
+					var str1="cell";
+					var str3=str1+str2;
+					if (str3==1) {
+						return true;
+					} else {
+						return false;
+						break;
+					}
+				}*/
+			}
+			if (false) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		//列判断
+		function checkCol(){
+			var colNum=0;//用于换列
+			var colTest=0;//列测试，用于换行
+			while(colTest<9) {
+				while(colNum<9) {
+					var cellTextCol=parseInt($("#sudoku tr").eq(colTest).children("td").eq(colNum).text());//取出该列内每一个数字
+					var cel1=0;
+					var cel2=0;
+					var cel3=0;
+					var cel4=0;
+					var cel5=0;
+					var cel6=0;
+					var cel7=0;
+					var cel8=0;
+					var cel9=0;
+					if (cellTextCol==1) {
+						cel1++;
+					}
+					if (cellTextCol==2) {
+						cel2++;
+					}
+					if (cellTextCol==3) {
+						cel3++;
+					}
+					if (cellTextCol==4) {
+						cel4++;
+					}
+					if (cellTextCol==5) {
+						cel5++;
+					}
+					if (cellTextCol==6) {
+						cel6++;
+					}
+					if (cellTextCol==7) {
+						cel7++;
+					}
+					if (cellTextCol==8) {
+						cel8++;
+					}
+					if (cellTextCol==9) {
+						cel9++;
+					}
+					colNum++;
+				}
+				if (cel1!=1) {
+					return false;
+					break;
+				}
+				if (cel2!=1) {
+					return false;
+					break;
+				}
+				if (cel3!=1) {
+					return false;
+					break;
+				}
+				if (cel4!=1) {
+					return false;
+					break;
+				}
+				if (cel5!=1) {
+					return false;
+					break;
+				}
+				if (cel6!=1) {
+					return false;
+					break;
+				}
+				if (cel7!=1) {
+					return false;
+					break;
+				}
+				if (cel8!=1) {
+					return false;
+					break;
+				}
+				if (cel9!=1) {
+					return false;
+					break;
+				}
+				/*for (var strr2=1; strr2<10; strr2++) {
+					var strr1="cel";
+					var strr3=strr1+strr2;
+					if (strr3==1) {
+						return true;
+					} else {
+						return false;
+						break;
+					}
+				}*/
+				colTest++;
+				var colNum=0;
+			}
+			if (false) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		//小九宫判断
+		function checkNine(){
+			var nineCol=0;
+			var nineRow=0;
+			var nineSectionR=0;
+			var nineSectionC=0;
+			var bumpAddNine=0;
+			while(nineSectionC<7) {//用于切换小九宫格的行
+				while(nineSectionR<7) {//用于切换小九宫格的列
+					while(nineCol<3) {//九宫格内换行
+						while(nineRow<3) {//九宫格内换列
+							var nineText=parseInt($("#sudoku tr").eq(nineSectionC+nineCol).children("td").eq(nineSectionR+nineRow).text());
+							var celll1=0;
+							var celll2=0;
+							var celll3=0;
+							var celll4=0;
+							var celll5=0;
+							var celll6=0;
+							var celll7=0;
+							var celll8=0;
+							var celll9=0;
+							if (nineText==1) {
+								celll1++;
+							}
+							if (nineText==2) {
+								celll2++;
+							}
+							if (nineText==3) {
+								celll3++;
+							}
+							if (nineText==4) {
+								celll4++;
+							}
+							if (nineText==5) {
+								celll5++;
+							}
+							if (nineText==6) {
+								celll6++;
+							}
+							if (nineText==7) {
+								celll7++;
+							}
+							if (nineText==8) {
+								celll8++;
+							}
+							if (nineText==9) {
+								celll9++;
+							}
+							nineRow++;
+						}
+						nineCol++;
+						var nineRow=0;
+					}
+					if (celll1!=1) {
+						return false;
+						break;
+					}
+					if (celll2!=1) {
+						return false;
+						break;
+					}
+					if (celll3!=1) {
+						return false;
+						break;
+					}
+					if (celll4!=1) {
+						return false;
+						break;
+					}
+					if (celll5!=1) {
+						return false;
+						break;
+					}
+					if (celll6!=1) {
+						return false;
+						break;
+					}
+					if (celll7!=1) {
+						return false;
+						break;
+					}
+					if (celll8!=1) {
+						return false;
+						break;
+					}
+					if (celll9!=1) {
+						return false;
+						break;
+					}
+					/*for (var st2=1; st2<10; st2++) {
+						var st1="celll";
+						var st3=st1+st2;
+						if (st3==1) {
+							return true;
+						} else {
+							return false;
+							break;
+						}
+					}*/
+					if (false) {
+						return false;
+						break;
+					} else {
+						return true;
+					}
+				}
+				var nineSectionR=nineSectionR+3;
+				var nineText=0;
+				var nineCol=0;
+				var nineRow=0;
+				if (false) {
+					return false;
+					break;
+				} else {
+					return true;
+				}
+			}
+			var nineSectionC=nineSectionC+3;
+			var nineSectionR=0;
+			var nineText=0;
+			var nineCol=0;
+			var nineRow=0;
+			if (false) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		/*function checkNumber(X,Y){
+			while(X<9) {
+				while(Y<9) {
+					var cellTextRow=parseInt($("#sudoku tr").eq(X).children("td").eq(Y).text());//取出该行内每一个数字
+					switch (cellTextRow) {//计算每个数字出现的次数
+						case 1:
+						num1++;
+						break;
+						case 2:
+						num2++;
+						break;
+						case 3:
+						num3++;
+						break;
+						case 4:
+						num4++;
+						break;
+						case 5:
+						num5++;
+						break;
+						case 6:
+						num6++;
+						break;
+						case 7:
+						num7++;
+						break;
+						case 8:
+						num8++;
+						break;
+						case 9:
+						num9++;
+						break;
+					}
+					Y++;
+				}
+				var count=1;
+				while(count<10) {
+					if (num+count!=1) {
+						return false;
+						break;
+					
+					}
+				}
+				if (false) {
+					break;
+				} else {
+					X++;
+					var Y=0;
+				}
+			}
+			if (false) {
+				return false;
+			} else {
+				return true
+			}
+		}*/
+	</script>
+</body>
+</html>
